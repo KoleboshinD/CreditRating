@@ -1,0 +1,122 @@
+body {
+    background-color: #F3EBF6;
+    font-family: 'Ubuntu', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.main {
+    background-color: #FFFFFF;
+    width: 400px;
+    border-radius: 1.5em;
+    box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+    padding: 20px 0 40px 0;
+}
+
+.sign {
+    color: #8C55AA;
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: bold;
+    font-size: 23px;
+    text-align: center;
+    margin: 20px 0 30px 0;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 0 20px;
+}
+
+.un, .pass {
+    width: 100%;
+    max-width: 280px;
+    color: rgb(38, 50, 56);
+    font-weight: 500;
+    font-size: 18px;
+    letter-spacing: 1px;
+    background: rgba(136, 126, 126, 0.04);
+    padding: 12px 20px;
+    border: 2px solid rgba(0, 0, 0, 0.02);
+    border-radius: 8px;
+    outline: none;
+    box-sizing: border-box;
+    font-family: 'Ubuntu', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.un:focus, .pass:focus {
+    border: 2px solid #9C27B0 !important;
+    background: rgba(156, 39, 176, 0.05);
+}
+
+.submit {
+    cursor: pointer;
+    border-radius: 8px;
+    color: #fff;
+    background: linear-gradient(to right, #9C27B0, #E040FB);
+    border: none;
+    padding: 12px 40px;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: auto;
+    min-width: 200px;
+    margin-top: 10px;
+}
+
+.submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(156, 39, 176, 0.3);
+}
+
+.submit:active {
+    transform: translateY(0);
+}
+
+.forgot {
+    text-align: center;
+    margin-top: 20px;
+}
+
+a {
+    color: #8C55AA;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #E040FB;
+    text-decoration: underline;
+}
+
+p {
+    text-align: center;
+    margin: 10px 0 0 0;
+}
+
+@media (max-width: 600px) {
+    .main {
+        width: 90%;
+        margin: 20px;
+    }
+
+    .un, .pass {
+        max-width: 100%;
+        font-size: 16px;
+    }
+
+    .submit {
+        width: 100%;
+        min-width: auto;
+    }
+}
