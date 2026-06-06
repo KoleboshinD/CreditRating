@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кредитный рейтинг</title>
+    <link rel="stylesheet" href="/static/index.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="nav">
+            <div><strong>CreditRating</strong></div>
+            <div>
+                <a href="/">Главная</a>
+                <a href="/profile">Личный кабинет</a>
+                {% if session.username == 'admin' %}
+                <a href="/admin">Админ панель</a>
+                {% endif %}
+                <a href="/logout">Выйти</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Контент -->
+    <div class="container">
+        <div class="card">
+            <h2>Ваш кредитный рейтинг</h2>
+
+            <div class="rating" id="ratingValue">{{ rating|default(550) }}</div>
+
+            <!-- Ползунок -->
+            <input type="range"
+                   id="slider"
+                   min="300"
+                   max="800"
+                   value="{{ rating|default(550) }}"
+                   oninput="updateRating(this.value)">
+
+            <!-- Ручной ввод -->
+            <div>
+                <input type="number"
+                       id="numberInput"
+                       min="300"
+                       max="800"
+                       value="{{ rating|default(550) }}"
+                       oninput="updateFromNumber(this.value)">
+            </div>
+
+            <button onclick="saveRating()">Сохранить</button>
+
+            <div id="message" class="message"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>© 2024 CreditRating | Ваш финансовый помощник</p>
+    </div>
+
+    <script>
+        // Синхронизация ползунка и поля ввода
+        function updateRating(value) {
+            document.getElementById('slider').value = value;
+            document.getElementById('numberInput').value = value;
+            document.getElementById('ratingValue').innerText = value;
+        }
+
+        function updateFromNumber(value) {
+            if (value < 300) value = 300;
+            if (value > 800) value = 800;
+            document.getElementById('slider').value = value;
+            document.getElementById('numberInput').value = value;
+            document.getElementById('ratingValue').innerText = value;
+        }
+
+        // Сохранение рейтинга
+        function saveRating() {
+            let rating = document.getElementById('slider').value;
+
+            fetch('/save_rating', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ rating: rating })
+            })
+            .then(response => response.json())
+            .then(data => {
+                let msg = document.getElementById('message');
+                msg.innerText = data.message;
+                msg.className = 'message success';
+                setTimeout(() => {
+                    msg.className = 'message';
+                }, 3000);
+            });
+        }
+    </script>
+</body>
+</html>
