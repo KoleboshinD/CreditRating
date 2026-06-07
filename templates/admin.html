@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Админ панель</title>
+    <link rel="stylesheet" href="/static/admin.css">
 </head>
 <body>
 
@@ -11,7 +12,7 @@
         <div class="nav">
             <div><strong>CreditRating - Админ панель</strong></div>
             <div>
-                <a href="/">Главная</a>
+                <a href="/static">Главная</a>
                 <a href="/profile">Личный кабинет</a>
                 <a href="/logout">Выйти</a>
             </div>
@@ -21,64 +22,84 @@
     <div class="container">
         <h1>Админ панель</h1>
 
-        <!-- Статистика -->
-        <div class="stats">
-            <div class="stat-card">
-                <h3>Всего пользователей</h3>
-                <div class="number">{{ total_users }}</div>
-            </div>
-            <div class="stat-card">
-                <h3>Средний рейтинг</h3>
-                <div class="number">{{ avg_rating }}</div>
-            </div>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('dashboard')">Дашборд</button>
+            <button class="tab-btn" onclick="showTab('users')">Пользователи</button>
+            <button class="tab-btn" onclick="showTab('banks')">Банки</button>
+            <button class="tab-btn" onclick="showTab('history')">История заявок</button>
         </div>
 
-        <!-- Графики -->
-        <div class="dashboard-section">
-            <h2>Визуализация данных</h2>
+        <div id="dashboard" class="tab-content active">
+            <div class="stats">
+                <div class="stat-card">
+                    <h3>Всего пользователей</h3>
+                    <div class="number">{{ total_users }}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Средний рейтинг</h3>
+                    <div class="number">{{ avg_rating }}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Макс. рейтинг</h3>
+                    <div class="number">{{ max_rating if max_rating else '—' }}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Мин. рейтинг</h3>
+                    <div class="number">{{ min_rating if min_rating else '—' }}</div>
+                </div>
+            </div>
+
             <div class="charts">
-                <div class="chart">
+                <div class="chart-box">
                     <h3>Распределение рейтингов</h3>
                     <div class="bar-chart">
-                        {% set max_count = chart_data.values()|max %}
-                        {% for range_name, count in chart_data.items() %}
-                        <div class="bar">
-                            <div class="bar-value">{{ count }}</div>
-                            <div class="bar-fill" style="height: {{ (count / max_count * 200) if max_count > 0 and max_count != count else 200 }}px;"></div>
-                            <div class="bar-label">{{ range_name }}</div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="chart">
-                    <h3>Соотношение рейтингов</h3>
-                    <div class="pie-chart">
-                        {% set colors = ['#44cc44', '#88cc44', '#ffaa00', '#ff4444'] %}
-                        {% set total = pie_data.values()|sum %}
-                        {% set current = 0 %}
-                        <div class="pie" style="background: conic-gradient(
-                            {% for cat, count in pie_data.items() %}
-                                {% set percent_cat = (count / total * 360) if total > 0 else 0 %}
-                                {{ colors[loop.index0] }} {{ current }}deg {{ current + percent_cat }}deg{% if not loop.last %}, {% endif %}
-                                {% set current = current + percent_cat %}
-                            {% endfor %}
-                        )"></div>
-                        <div class="pie-legend">
-                            {% for cat, count in pie_data.items() %}
-                            <div class="pie-legend-item">
-                                <div class="legend-color" style="background: {{ colors[loop.index0] }}"></div>
-                                <span>{{ cat }} ({{ count }})</span>
+                        {% if chart_data %}
+                            {% set max_count = chart_data.values()|max %}
+                            {% for range_name, count in chart_data.items() %}
+                            <div class="bar">
+                                <div class="bar-value">{{ count }}</div>
+                                <div class="bar-fill" style="height: {{ (count / max_count * 200) if max_count > 0 and max_count != count else 200 }}px;"></div>
+                                <div class="bar-label">{{ range_name }}</div>
                             </div>
                             {% endfor %}
-                        </div>
+                        {% else %}
+                            <p style="text-align: center; width: 100%;">Нет данных</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="chart-box">
+                    <h3>Соотношение рейтингов</h3>
+                    <div class="pie-chart">
+                        {% if pie_data %}
+                            {% set colors = ['#44cc44', '#88cc44', '#ffaa00', '#ff4444'] %}
+                            {% set total = pie_data.values()|sum %}
+                            {% set current = 0 %}
+                            <div class="pie" style="background: conic-gradient(
+                                {% for cat, count in pie_data.items() %}
+                                    {% set percent_cat = (count / total * 360) if total > 0 else 0 %}
+                                    {{ colors[loop.index0] }} {{ current }}deg {{ current + percent_cat }}deg{% if not loop.last %}, {% endif %}
+                                    {% set current = current + percent_cat %}
+                                {% endfor %}
+                            )"></div>
+                            <div class="pie-legend">
+                                {% for cat, count in pie_data.items() %}
+                                <div class="pie-legend-item">
+                                    <div class="legend-color" style="background: {{ colors[loop.index0] }}"></div>
+                                    <span>{{ cat }} ({{ count }})</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p>Нет данных</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="dashboard-indicator">
-            <h2 class="indicator-title">Общий показатель кредитоспособности</h2>
-            <div class="indicator-container">
-                <div class="simple-indicator">
+
+            <!-- Индикатор -->
+            <div class="indicator-box">
+                <h2 class="indicator-title">Общий показатель кредитоспособности</h2>
+                <div class="indicator-container">
                     <div class="circle">
                         <svg viewBox="0 0 200 200">
                             <circle class="circle-bg" cx="100" cy="100" r="80"></circle>
@@ -91,35 +112,130 @@
                             <div class="circle-label">от максимума</div>
                         </div>
                     </div>
-                </div>
-                <div class="indicator-stats">
-                    <div class="value">{{ avg_rating }}</div>
-                    <div class="status">{{ status_text }}</div>
-                    <div class="range">из диапазона 300-800</div>
-                    <div style="margin-top: 15px; font-size: 14px; color: #666;">
-                        {{ total_users }} пользователей
+                    <div class="indicator-stats">
+                        <div class="value">{{ avg_rating }}</div>
+                        <div class="status">{{ status_text }}</div>
+                        <div class="range">из диапазона 300-800</div>
                     </div>
                 </div>
-                <div class="status-scale">
-                    <div style="display: flex; gap: 15px; margin-top: 20px;">
-                        <div style="text-align: center;">
-                            <div style="width: 40px; height: 10px; background: #ff4444; border-radius: 5px;"></div>
-                            <span style="font-size: 10px;">Низкий</span>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="width: 40px; height: 10px; background: #ffaa00; border-radius: 5px;"></div>
-                            <span style="font-size: 10px;">Средний</span>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="width: 40px; height: 10px; background: #88cc44; border-radius: 5px;"></div>
-                            <span style="font-size: 10px;">Хороший</span>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="width: 40px; height: 10px; background: #44cc44; border-radius: 5px;"></div>
-                            <span style="font-size: 10px;">Отличный</span>
-                        </div>
-                    </div>
-                </div>
+            </div>
+        </div>
+
+        <!-- Вкладка Пользователи -->
+        <div id="users" class="tab-content">
+            <div class="table-container">
+                <h2 style="margin-bottom: 20px; color: #9C27B0;">Список пользователей</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>ФИО</th>
+                            <th>Логин</th>
+                            <th>Рейтинг</th>
+                            <th>Дата регистрации</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if users %}
+                            {% for user in users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.fullname }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.rating }}</td>
+                                <td>{{ user.created_at.strftime('%d.%m.%Y') if user.created_at else '—' }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5" style="text-align: center;">Нет пользователей</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="banks" class="tab-content">
+            <div class="table-container">
+                <h2 style="margin-bottom: 20px; color: #9C27B0;">Список банков</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Лого</th>
+                            <th>Название</th>
+                            <th>Мин. рейтинг</th>
+                            <th>Макс. рейтинг</th>
+                            <th>Ставка</th>
+                            <th>Макс. сумма</th>
+                            <th>Срок</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if banks %}
+                            {% for bank in banks %}
+                            <tr>
+                                <td>{{ bank.id }}</td>
+                                <td>{{ bank.logo|default('') }}</td>
+                                <td>{{ bank.name }}</td>
+                                <td>{{ bank.min_rating }}</td>
+                                <td>{{ bank.max_rating }}</td>
+                                <td>{{ bank.interest_rate }}</td>
+                                <td>{{ bank.max_amount }}</td>
+                                <td>{{ bank.term }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="8" style="text-align: center;">Нет банков</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Вкладка История заявок -->
+        <div id="history" class="tab-content">
+            <div class="table-container">
+                <h2 style="margin-bottom: 20px; color: #9C27B0;">Все кредитные заявки</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Пользователь</th>
+                            <th>Банк</th>
+                            <th>Запрошено</th>
+                            <th>Статус</th>
+                            <th>Одобрено</th>
+                            <th>Дата</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if history %}
+                            {% for req in history %}
+                            <tr>
+                                <td>{{ req.id }}</td>
+                                <td>{{ req.username }}</td>
+                                <td>{{ req.bank_name }}</td>
+                                <td>{{ req.requested_amount|round(0) }} ₽</td>
+                                <td class="status-{{ req.status }}">
+                                    {% if req.status == 'approved' %}Одобрено
+                                    {% elif req.status == 'rejected' %}Отказано
+                                    {% else %}⏳ В обработке{% endif %}
+                                </td>
+                                <td>{% if req.approved_amount > 0 %}{{ req.approved_amount|round(0) }} ₽{% else %}—{% endif %}</td>
+                                <td>{{ req.request_date.strftime('%d.%m.%Y %H:%M') if req.request_date else '—' }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="7" style="text-align: center;">Нет заявок</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -128,5 +244,6 @@
         <p>© 2024 CreditRating | Админ панель</p>
     </div>
 
+<script scr="/script/admin.js"></script>
 </body>
 </html>
