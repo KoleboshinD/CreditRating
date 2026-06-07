@@ -103,20 +103,3 @@ p {
     text-align: center;
     margin: 10px 0 0 0;
 }
-
-@media (max-width: 600px) {
-    .main {
-        width: 90%;
-        margin: 20px;
-    }
-
-    .un, .pass {
-        max-width: 100%;
-        font-size: 16px;
-    }
-
-    .submit {
-        width: 100%;
-        min-width: auto;
-    }
-}

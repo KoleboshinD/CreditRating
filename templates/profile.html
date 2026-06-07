@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет</title>
+    <link rel="stylesheet" href="/static/profile.css">
+</head>
+<body>
+    <div class="header">
+        <div class="nav">
+            <div><strong>CreditRating</strong></div>
+            <div>
+                <a href="/">Главная</a>
+                <a href="/profile">Личный кабинет</a>
+                {% if session.username == 'admin' %}
+                <a href="/admin">Админ панель</a>
+                {% endif %}
+                <a href="/logout">Выйти</a>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="profile-card">
+            <h2>Личный кабинет</h2>
+            <div class="info-item">
+                <strong>ФИО:</strong> {{ user.fullname }}
+            </div>
+            <div class="info-item">
+                <strong>Логин:</strong> {{ user.username }}
+            </div>
+
+            <div class="rating-box">
+                <div class="rating-value">{{ user.rating }}</div>
+                <div class="rating-label">Ваш кредитный рейтинг</div>
+            </div>
+            <a href="/"><button>Изменить рейтинг</button></a>
+        </div>
+        <h2 class="banks-title">Кредитные предложения</h2>
+        <div class="banks-grid">
+            {% for bank in banks %}
+            <div class="bank-card">
+                <h3>{{ bank.name }}</h3>
+                <p class="rate">{{ bank.rate }}</p>
+                <p>до {{ bank.max_amount }}</p>
+                <p>срок: {{ bank.term }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="footer">
+        <p>© 2024 CreditRating | Ваш финансовый помощник</p>
+    </div>
+</body>
+</html>

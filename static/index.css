@@ -12,7 +12,6 @@
             flex-direction: column;
         }
 
-        /* Header */
         .header {
             background: #9C27B0;
             color: white;
@@ -37,7 +36,6 @@
             text-decoration: underline;
         }
 
-        /* Контент */
         .container {
             flex: 1;
             display: flex;
@@ -98,7 +96,6 @@
             background: #7B1FA2;
         }
 
-        /* Footer */
         .footer {
             background: #9C27B0;
             color: white;
