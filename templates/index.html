@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кредитный рейтинг</title>
+    <link rel="stylesheet" href="/static/index.css">
+</head>
+<body>
+    <div class="header">
+        <div class="nav">
+            <div><strong>CreditRating</strong></div>
+            <div>
+                <a href="/profile">Личный кабинет</a>
+                {% if session.username == 'admin' %}
+                <a href="/admin">Админ панель</a>
+                {% endif %}
+                <a href="/logout">Выйти</a>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="card">
+            <h2>Ваш кредитный рейтинг</h2>
+            <div class="rating" id="ratingValue">{{ rating|default(550) }}</div>
+            <input type="range"
+                   id="slider"
+                   min="300"
+                   max="800"
+                   value="{{ rating|default(550) }}"
+                   oninput="updateRating(this.value)"
+                    draggable="false">
+            <div>
+                <input type="number"
+                       id="numberInput"
+                       min="300"
+                       max="800"
+                       value="{{ rating|default(550) }}"
+                       oninput="updateFromNumber(this.value)">
+            </div>
+            <button onclick="saveRating()">Сохранить</button>
+            <div id="message" class="message"></div>
+        </div>
+    </div>
+    <div class="footer">
+        <p>© 2024 CreditRating | Ваш финансовый помощник</p>
+    </div>
+<script scr="/script/script.js"></script>
+</body>
+</html>

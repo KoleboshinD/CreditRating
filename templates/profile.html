@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет</title>
+    <link rel="stylesheet" href="/static/profile.css">
+</head>
+<body>
+    <div class="header">
+        <div class="nav">
+            <div><strong>CreditRating</strong></div>
+            <div>
+                <a href="/static">Главная</a>
+                <a href="/profile">Личный кабинет</a>
+                {% if session.username == 'admin' %}
+                <a href="/admin">Админ панель</a>
+                {% endif %}
+                <a href="/logout">Выйти</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="profile-card">
+            <h2>Личный кабинет</h2>
+
+            <div class="info-item">
+                <strong>ФИО:</strong> {{ user.fullname }}
+            </div>
+            <div class="info-item">
+                <strong>Логин:</strong> {{ user.username }}
+            </div>
+            <div class="info-item">
+                <strong>ID:</strong> {{ user.id }}
+            </div>
+
+            <div class="rating-box">
+                <div class="rating-value">{{ user.rating }}</div>
+                <div class="rating-label">Ваш кредитный рейтинг</div>
+            </div>
+
+            <a href="/static"><button class="btn-history" style="background: #E040FB;">Изменить рейтинг</button></a>
+        </div>
+
+        <h2 class="banks-title">Кредитные предложения для вас</h2>
+        <div class="banks-grid">
+            {% if banks %}
+                {% for bank in banks %}
+                <div class="bank-card">
+                    <h3>{{ bank.logo|default('') }} {{ bank.name }}</h3>
+                    <p>Минимальный рейтинг: {{ bank.min_rating }}</p>
+                    <p>Ставка: <span class="rate">{{ bank.interest_rate }}</span></p>
+                    <p>Максимальная сумма: {{ bank.max_amount }}</p>
+                    <p>Срок: {{ bank.term }}</p>
+                    <button onclick="requestCredit({{ bank.id }}, '{{ bank.name }}')">📝 Подать заявку</button>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="bank-card">
+                    <h3>Нет предложений</h3>
+                    <p>К сожалению, для вашего рейтинга пока нет подходящих кредитных предложений.</p>
+                    <p>Повысьте рейтинг, чтобы увидеть больше вариантов!</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="history-section">
+            <h2>Мои заявки на кредит</h2>
+            <div class="table-wrapper">
+                {% if history and history|length > 0 %}
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Банк</th>
+                            <th>Сумма (запрошено)</th>
+                            <th>Статус</th>
+                            <th>Одобрено</th>
+                            <th>Дата</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for req in history %}
+                        <tr>
+                            <td>{{ req.logo|default('') }} {{ req.bank_name }}</td>
+                            <td>{{ req.requested_amount|round(0) }} ₽</td>
+                            <td class="status-{{ req.status }}">
+                                {% if req.status == 'approved' %}Одобрено
+                                {% elif req.status == 'rejected' %}Отказано
+                                {% elif req.status == 'partial' %}Частично
+                                {% else %}⏳ В обработке{% endif %}
+                            </td>
+                            <td>{% if req.approved_amount and req.approved_amount > 0 %}{{ req.approved_amount|round(0) }} ₽{% else %}—{% endif %}</td>
+                            <td>{{ req.request_date.strftime('%d.%m.%Y') if req.request_date else '—' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p style="text-align: center; color: #666; padding: 40px;">У вас пока нет ни одной заявки на кредит</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2024 CreditRating | Ваш финансовый помощник</p>
+    </div>
+
+<script scr="/script/profile.js"></script>
+</body>
+</html>

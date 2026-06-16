@@ -1,0 +1,117 @@
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F3EBF6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: #9C27B0;
+            color: white;
+            padding: 15px 30px;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        .nav a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .card {
+            background: white;
+            width: 450px;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            color: #9C27B0;
+            margin-bottom: 30px;
+        }
+
+        .rating {
+            font-size: 50px;
+            font-weight: bold;
+            color: #9C27B0;
+            margin: 20px 0;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            margin: 20px 0;
+        }
+
+        input[type="number"] {
+            width: 120px;
+            padding: 10px;
+            font-size: 18px;
+            text-align: center;
+            border: 2px solid #9C27B0;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        button {
+            background: #9C27B0;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background: #7B1FA2;
+        }
+
+        .footer {
+            background: #9C27B0;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: auto;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .success {
+            background: #4CAF50;
+            color: white;
+        }
